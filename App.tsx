@@ -1,22 +1,28 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
-import Navigation from './navigation';
+import { AuthProvider } from './src/context/auth/AuthContext';
+import { ThemeProvider } from './src/context/theme/ThemeContext';
+import { RootNavigation } from './src/navigation/RootNavigation';
+
 
 export default function App() {
-  const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
+  return (
+    <SafeAreaProvider>
+      <StatusBar />
+      
+      <AppContexts>
+        <RootNavigation />
+      </AppContexts>
 
-  if (!isLoadingComplete) {
-    return null;
-  } else {
-    return (
-      <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} />
-        <StatusBar />
-      </SafeAreaProvider>
-    );
-  }
+    </SafeAreaProvider>
+  );
 }
+
+const AppContexts = ({children}:{children:JSX.Element | JSX.Element[]}) => (
+  <AuthProvider>
+    <ThemeProvider>
+      {children}
+    </ThemeProvider>
+  </AuthProvider>
+)
